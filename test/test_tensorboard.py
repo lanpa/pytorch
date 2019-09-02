@@ -94,16 +94,16 @@ if TEST_TENSORBOARD:
             self.assertIsInstance(make_np(x), np.ndarray)
 
         def test_pytorch_write(self):
-            with SummaryWriter() as w:
+            with SummaryWriter(comment='test_pytorch_write') as w:
                 w.add_scalar('scalar', torch.autograd.Variable(torch.rand(1)), 0)
 
         def test_pytorch_histogram(self):
-            with SummaryWriter() as w:
+            with SummaryWriter(comment='test_pytorch_histogram') as w:
                 w.add_histogram('float histogram', torch.rand((50,)))
                 w.add_histogram('int histogram', torch.randint(0, 100, (50,)))
 
         def test_pytorch_histogram_raw(self):
-            with SummaryWriter() as w:
+            with SummaryWriter(comment='test_pytorch_histogram_raw') as w:
                 num = 50
                 floats = make_np(torch.rand((num,)))
                 bins = [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -195,7 +195,7 @@ if TEST_TENSORBOARD:
 
     class TestTensorBoardWriter(BaseTestCase):
         def test_writer(self):
-            with SummaryWriter() as writer:
+            with SummaryWriter(comment='test_writer') as writer:
                 sample_rate = 44100
 
                 n_iter = 0
@@ -243,7 +243,7 @@ if TEST_TENSORBOARD:
             # OSError: [Errno 24] Too many open files
             passed = True
             try:
-                writer = SummaryWriter()
+                writer = SummaryWriter(comment='test_summary_writer_close')
                 writer.close()
             except OSError:
                 passed = False
@@ -264,7 +264,7 @@ if TEST_TENSORBOARD:
 
     class TestTensorBoardEmbedding(BaseTestCase):
         def test_embedding(self):
-            w = SummaryWriter()
+            w = SummaryWriter(comment='test_embedding')
             all_features = torch.Tensor([[1, 2, 3], [5, 4, 1], [3, 7, 7]])
             all_labels = torch.Tensor([33, 44, 55])
             all_images = torch.zeros(3, 3, 5, 5)
@@ -284,7 +284,7 @@ if TEST_TENSORBOARD:
             # assert...
 
         def test_embedding_64(self):
-            w = SummaryWriter()
+            w = SummaryWriter(comment='test_embedding_64')
             all_features = torch.Tensor([[1, 2, 3], [5, 4, 1], [3, 7, 7]])
             all_labels = torch.Tensor([33, 44, 55])
             all_images = torch.zeros((3, 3, 5, 5), dtype=torch.float64)
@@ -512,7 +512,7 @@ if TEST_TENSORBOARD:
     class TestTensorBoardFigure(BaseTestCase):
         @skipIfNoMatplotlib
         def test_figure(self):
-            writer = SummaryWriter()
+            writer = SummaryWriter(comment='test_figure')
 
             figure, axes = plt.figure(), plt.gca()
             circle1 = plt.Circle((0.2, 0.5), 0.2, color='r')
@@ -532,7 +532,7 @@ if TEST_TENSORBOARD:
 
         @skipIfNoMatplotlib
         def test_figure_list(self):
-            writer = SummaryWriter()
+            writer = SummaryWriter(comment='test_figure_list')
 
             figures = []
             for i in range(5):
